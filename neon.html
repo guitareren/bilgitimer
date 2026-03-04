@@ -67,7 +67,6 @@
             21% { filter: none; color: #008891; }
         }
 
-        /* --- UI WRAPPER --- */
         .wrapper {
             position: relative;
             z-index: 10;
@@ -82,7 +81,6 @@
             animation: flicker-logo 12s infinite;
         }
 
-        /* MEGA COUNTER */
         #timerDisplay {
             font-size: min(220px, 22vw);
             font-weight: 800;
@@ -109,7 +107,6 @@
             border-radius: 4px; color: var(--smoke); font-size: 28px; text-align: center; font-family: 'JetBrains Mono'; outline: none;
         }
 
-        /* --- BUTTONS --- */
         .animated-button {
             position: relative;
             padding: 14px 0; width: 280px;
@@ -137,7 +134,6 @@
 
         .hidden { display: none !important; pointer-events: none; opacity: 0; }
 
-        /* --- GITHUB FOOTER --- */
         .github-link {
             text-decoration: none;
             color: var(--vice-cyan);
@@ -149,17 +145,9 @@
             transition: 0.4s ease;
         }
 
-        .github-link i {
-            font-size: 18px;
-            animation: github-flicker 5s infinite;
-        }
-
+        .github-link i { font-size: 18px; animation: github-flicker 5s infinite; }
         .github-link strong { font-weight: 900; }
-
-        .github-link:hover {
-            color: var(--smoke);
-            text-shadow: 0 0 12px var(--vice-cyan);
-        }
+        .github-link:hover { color: var(--smoke); text-shadow: 0 0 12px var(--vice-cyan); }
 
         footer { color: #444; font-size: 9px; letter-spacing: 5px; margin-top: 8px; text-align: center; }
     </style>
@@ -209,6 +197,7 @@
         const display = document.getElementById('timerDisplay');
         const inputArea = document.getElementById('inputArea');
         const inputs = ['h', 'm', 's'].map(id => document.getElementById(id));
+        const btnText = document.getElementById('btnText');
 
         function createRain() {
             for (let i = 0; i < 50; i++) {
@@ -226,6 +215,7 @@
         let timer;
         let timeLeft = 0;
         let running = false;
+        let paused = false; // Duraklatma kontrolü eklendi
 
         function getInputsValue() {
             const hrs = parseInt(inputs[0].value) || 0;
@@ -241,10 +231,9 @@
             return `${hrs}:${mins}:${secs}`;
         }
 
-        // Real-time input listener
         inputs.forEach(input => {
             input.addEventListener('input', () => {
-                if (!running) {
+                if (!running && !paused) {
                     display.classList.remove('time-up');
                     timeLeft = getInputsValue();
                     display.textContent = formatDisplay(timeLeft);
@@ -254,11 +243,15 @@
 
         document.getElementById('startBtn').addEventListener('click', function() {
             if (!running) {
-                timeLeft = getInputsValue();
+                // Eğer daha önce duraklatılmamışsa değerleri inputtan çek
+                if (!paused) {
+                    timeLeft = getInputsValue();
+                }
                 
                 if (timeLeft > 0) {
                     running = true;
-                    this.querySelector('#btnText').textContent = "PAUSE";
+                    paused = false;
+                    btnText.textContent = "PAUSE";
                     inputArea.classList.add('hidden');
                     display.classList.remove('time-up');
                     
@@ -269,28 +262,32 @@
                         if (timeLeft <= 0) {
                             clearInterval(timer);
                             running = false;
+                            paused = false;
                             display.textContent = "TIME UP!";
                             display.classList.add('time-up');
-                            document.getElementById('btnText').textContent = "START";
+                            btnText.textContent = "START";
                             inputArea.classList.remove('hidden');
                         }
                     }, 1000);
                 }
             } else {
+                // PAUSE mantığı
                 clearInterval(timer);
                 running = false;
-                this.querySelector('#btnText').textContent = "RESUME";
+                paused = true;
+                btnText.textContent = "RESUME";
             }
         });
 
         document.getElementById('resetBtn').addEventListener('click', () => {
             clearInterval(timer);
             running = false;
+            paused = false;
             timeLeft = 0;
             inputs.forEach(i => i.value = "");
             display.textContent = "00:00:00";
             display.classList.remove('time-up');
-            document.getElementById('btnText').textContent = "START";
+            btnText.textContent = "START";
             inputArea.classList.remove('hidden');
         });
     </script>
