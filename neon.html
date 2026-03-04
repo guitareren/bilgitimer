@@ -194,7 +194,7 @@
             </button>
             
             <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
-                <a href="https://guitareren.github.io/guitareren" target="_blank" class="github-link">
+                <a href="https://github.com/guitareren" target="_blank" class="github-link">
                     <i class="fab fa-github"></i>
                     <span>eren<strong>avunc</strong></span>
                 </a>
@@ -227,7 +227,6 @@
         let timeLeft = 0;
         let running = false;
 
-        // --- REAL TIME UPDATE LOGIC ---
         function getInputsValue() {
             const hrs = parseInt(inputs[0].value) || 0;
             const mins = parseInt(inputs[1].value) || 0;
@@ -242,7 +241,7 @@
             return `${hrs}:${mins}:${secs}`;
         }
 
-        // Anlık izleme
+        // Real-time input listener
         inputs.forEach(input => {
             input.addEventListener('input', () => {
                 if (!running) {
@@ -253,7 +252,6 @@
             });
         });
 
-        // --- CONTROL LOGIC ---
         document.getElementById('startBtn').addEventListener('click', function() {
             if (!running) {
                 timeLeft = getInputsValue();
