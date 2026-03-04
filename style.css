@@ -61,35 +61,28 @@ body {
 section.counter {
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
-    /* Elemanları dikeyde eşit ve dengeli dağıtır */
+    justify-content: center; /* Elemanları merkeze topla */
     align-items: center;
     width: 100%;
-    height: 100dvh;
-    padding: 10px 20px;
+    min-height: 100dvh; /* Sabit değil, minimum yükseklik */
+    padding: 20px;
     box-sizing: border-box;
-    overflow: hidden;
-    /* Taşmaları engeller */
-    overflow-y: auto;
-    /* Çok daralırsa en azından kaydırılabilir olsun */
-    gap: 1vh;
-    /* Elemanlar arası dinamik boşluk */
+    gap: 2vh; /* Elemanlar arası boşluğu ekran yüksekliğine göre ayarla */
+    overflow-y: auto; /* İçerik taşarsa kaydırılabilir olsun */
 }
 
 #count {
     font-weight: 800;
-    font-size: clamp(4rem, 22vmin, 33rem);
+    /* Üst sınırı 33rem'den 15rem veya 20rem gibi daha güvenli bir yere çekiyoruz */
+    font-size: clamp(3rem, 18vmin, 15rem); 
     color: whitesmoke;
-    line-height: 1;
+    line-height: 0.9; /* Satır yüksekliğini biraz daraltmak yer kazandırır */
     letter-spacing: -0.04em;
     font-variant-numeric: tabular-nums;
     text-align: center;
-    text-shadow: 0 0 20px rgba(245, 245, 245, 0.2);
     max-width: 95vw;
-    margin: 0;
-    /* Boşluklar flex-evenly tarafından yönetilecek */
-    overflow: hidden;
     z-index: 5;
+    flex-shrink: 0; /* Sayacın ezilmesini engelle */
 }
 
 
