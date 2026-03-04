@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BILGI | Timer Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --vice-pink: #ff00ff;
+            --vice-red: #c9033e;
+            --vice-cyan: #00f2ff;
+            --black: #050505;
+            --smoke: #f5f5f5;
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background-color: var(--black);
+            font-family: 'JetBrains Mono', monospace;
+            overflow: hidden;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        /* --- BACKGROUND & NEON RAIN --- */
+        #rainContainer {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+            background: radial-gradient(circle at center, #1a0121 0%, #000 100%);
+            pointer-events: none;
+        }
+
+        .rain-drop {
+            position: absolute;
+            top: -150px;
+            width: 1px;
+            height: 80px;
+            background: linear-gradient(to bottom, transparent, var(--drop-color));
+            opacity: 0;
+            animation: vice-fall var(--duration) infinite linear;
+            animation-delay: var(--delay);
+        }
+
+        @keyframes vice-fall {
+            0% { transform: translateY(0); opacity: 0; }
+            20% { opacity: 0.4; }
+            100% { transform: translateY(110vh); opacity: 0; }
+        }
+
+        /* --- FLICKER ANIMATIONS --- */
+        @keyframes flicker-logo {
+            0%, 100%, 30%, 32%, 88%, 90% { opacity: 1; filter: drop-shadow(0 0 15px var(--vice-pink)); }
+            31%, 89% { opacity: 0.7; filter: drop-shadow(0 0 5px var(--vice-pink)); }
+        }
+
+        @keyframes flicker-timer {
+            0%, 100%, 45%, 47%, 48%, 50% { opacity: 1; text-shadow: 4px 4px 0px var(--vice-red), 0 0 30px var(--vice-pink); }
+            46%, 49% { opacity: 0.8; text-shadow: 2px 2px 0px var(--vice-red), 0 0 10px var(--vice-pink); }
+        }
+
+        @keyframes github-flicker {
+            0%, 100%, 20%, 22% { filter: drop-shadow(0 0 8px var(--vice-cyan)); color: var(--vice-cyan); }
+            21% { filter: none; color: #008891; }
+        }
+
+        /* --- UI WRAPPER --- */
+        .wrapper {
+            position: relative;
+            z-index: 10;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: space-between;
+            height: 100vh; width: 100%; padding: 30px 0;
+            box-sizing: border-box;
+        }
+
+        .section-logo img {
+            width: 240px;
+            animation: flicker-logo 12s infinite;
+        }
+
+        #timerDisplay {
+            font-size: min(180px, 18vw);
+            font-weight: 800;
+            color: var(--smoke);
+            text-shadow: 4px 4px 0px var(--vice-red), 0 0 30px var(--vice-pink);
+            letter-spacing: -6px;
+            animation: flicker-timer 7s infinite;
+            user-select: none;
+        }
+
+        .section-inputs { display: flex; gap: 15px; }
+        .input-group label { display: block; font-size: 10px; color: var(--vice-cyan); text-align: center; margin-bottom: 5px; font-weight: bold; letter-spacing: 2px;}
+        
+        input {
+            width: 70px; height: 55px; background: rgba(0,0,0,0.85); border: 2px solid var(--vice-red);
+            border-radius: 4px; color: var(--smoke); font-size: 28px; text-align: center; font-family: 'JetBrains Mono'; outline: none;
+        }
+
+        /* --- BUTTONS (RESIZED) --- */
+        .animated-button {
+            position: relative;
+            padding: 14px 0; width: 280px;
+            border: 2px solid var(--vice-cyan);
+            background: transparent;
+            color: var(--vice-cyan);
+            font-weight: 800; font-size: 15px;
+            cursor: pointer; overflow: hidden;
+            transition: 0.3s; text-transform: uppercase; letter-spacing: 3px;
+            margin-bottom: 8px;
+        }
+
+        .animated-button .circle {
+            position: absolute; top: 50%; left: 50%; width: 0; height: 0;
+            background: var(--vice-cyan); 
+            transform: translate(-50%, -50%); transition: 0.5s ease-out; z-index: -1;
+        }
+
+        .animated-button:hover { color: var(--black); box-shadow: 0 0 20px var(--vice-cyan); }
+        .animated-button:hover .circle { width: 400px; height: 400px; }
+
+        .reset-btn { border-color: var(--vice-red); color: var(--vice-red); width: 180px; font-size: 11px; margin: 0 auto; display: block;}
+        .reset-btn .circle { background: var(--vice-red); }
+        .reset-btn:hover { color: var(--smoke); box-shadow: 0 0 20px var(--vice-red); }
+
+        .hidden { display: none !important; }
+
+        /* --- GITHUB FOOTER --- */
+        .github-link {
+            text-decoration: none;
+            color: var(--vice-cyan);
+            font-size: 14px;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.4s ease;
+        }
+
+        .github-link i {
+            font-size: 18px;
+            animation: github-flicker 5s infinite;
+        }
+
+        .github-link strong { font-weight: 900; }
+
+        .github-link:hover {
+            color: var(--smoke);
+            text-shadow: 0 0 12px var(--vice-cyan);
+        }
+
+        footer { color: #444; font-size: 9px; letter-spacing: 5px; margin-top: 8px; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div id="rainContainer"></div>
+
+    <div class="wrapper">
+        <section class="section-logo">
+            <a href="https://www.bilgi.edu.tr" target="_blank">
+                <img src="https://tbl.bilgi.edu.tr/brand-resources/logotypes/bilgi/svg/bilgi-logotype-tr-light.svg" alt="Bilgi University">
+            </a>
+        </section>
+
+        <section class="section-inputs" id="inputArea">
+            <div class="input-group"><label>HOUR</label><input type="number" id="h" placeholder="00"></div>
+            <div class="input-group"><label>MIN</label><input type="number" id="m" placeholder="00"></div>
+            <div class="input-group"><label>SEC</label><input type="number" id="s" placeholder="00"></div>
+        </section>
+
+        <div id="timerDisplay">00:00:00</div>
+
+        <section class="section-controls">
+            <button class="animated-button" id="startBtn">
+                <span style="position: relative; z-index: 1;" id="btnText">START</span>
+                <span class="circle"></span>
+            </button>
+            <button class="animated-button reset-btn" id="resetBtn">
+                <span style="position: relative; z-index: 1;">RESET</span>
+                <span class="circle"></span>
+            </button>
+            
+            <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px;">
+                <a href="https://guitareren.github.io/guitareren" target="_blank" class="github-link">
+                    <i class="fab fa-github"></i>
+                    <span>eren<strong>avunc</strong></span>
+                </a>
+                <footer>// BILGI UNIVERSITY //</footer>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const container = document.getElementById('rainContainer');
+        const colors = ['#ff00ff', '#c9033e', '#00f2ff', '#7000ff'];
+
+        function createRain() {
+            for (let i = 0; i < 50; i++) {
+                const drop = document.createElement('div');
+                drop.className = 'rain-drop';
+                drop.style.left = Math.random() * 100 + 'vw';
+                drop.style.setProperty('--duration', (Math.random() * 3 + 3) + 's');
+                drop.style.setProperty('--delay', (Math.random() * 8) + 's');
+                drop.style.setProperty('--drop-color', colors[Math.floor(Math.random() * colors.length)]);
+                container.appendChild(drop);
+            }
+        }
+
+        createRain();
+
+        let timer;
+        let timeLeft = 0;
+        let running = false;
+
+        function updateDisplay() {
+            const hrs = Math.floor(timeLeft / 3600).toString().padStart(2, '0');
+            const mins = Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0');
+            const secs = (timeLeft % 60).toString().padStart(2, '0');
+            document.getElementById('timerDisplay').textContent = `${hrs}:${mins}:${secs}`;
+        }
+
+        document.getElementById('startBtn').addEventListener('click', function() {
+            if (!running) {
+                if (timeLeft === 0) {
+                    const h = parseInt(document.getElementById('h').value) || 0;
+                    const m = parseInt(document.getElementById('m').value) || 0;
+                    const s = parseInt(document.getElementById('s').value) || 0;
+                    timeLeft = (h * 3600) + (m * 60) + s;
+                }
+                
+                if (timeLeft > 0) {
+                    running = true;
+                    document.getElementById('btnText').textContent = "PAUSE";
+                    document.getElementById('inputArea').classList.add('hidden');
+                    updateDisplay();
+                    
+                    timer = setInterval(() => {
+                        timeLeft--;
+                        updateDisplay();
+                        if (timeLeft <= 0) {
+                            clearInterval(timer);
+                            alert("Time is up!");
+                            location.reload();
+                        }
+                    }, 1000);
+                }
+            } else {
+                clearInterval(timer);
+                running = false;
+                document.getElementById('btnText').textContent = "RESUME";
+            }
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', () => location.reload());
+    </script>
+</body>
+</html>
