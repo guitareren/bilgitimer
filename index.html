@@ -44,7 +44,7 @@
 
             <div id="input-mask"></div>
             <div id="pink-mask"></div>
-            <div id="filter-icon">⏱</div>
+
         </div>
 
         <div id="count">00:00:00</div>
@@ -68,99 +68,100 @@
             <span>eren<strong>avunc</strong></span>
         </a>
     </footer>
-    <script>
-        let remaining = 0;
-        let interval = null;
-        let isRunning = false;
+ <script>
+    let remaining = 0;
+    let interval = null;
+    let isRunning = false;
 
-        const countEl = document.getElementById("count");
-        const startPauseBtn = document.getElementById("startPause");
-        const resetBtn = document.getElementById("reset");
-        const hoursInput = document.getElementById("hours");
-        const minutesInput = document.getElementById("minutes");
-        const secondsInput = document.getElementById("seconds");
+    const countEl = document.getElementById("count");
+    const startPauseBtn = document.getElementById("startPause");
+    const resetBtn = document.getElementById("reset");
+    const btnText = startPauseBtn.querySelector(".front");
+    const inputs = document.querySelectorAll(".time-inputs input");
 
-        function formatTime(seconds) {
-            const h = Math.floor(seconds / 3600).toString().padStart(2, "0");
-            const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, "0");
-            const s = (seconds % 60).toString().padStart(2, "0");
-            return `${h}:${m}:${s}`;
-        }
+    // Zamanı formatlayan tek ve optimize fonksiyon
+    function updateDisplay(totalSeconds) {
+        const h = Math.floor(totalSeconds / 3600);
+        const m = Math.floor((totalSeconds % 3600) / 60);
+        const s = totalSeconds % 60;
+        countEl.textContent = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
 
-        function updateDisplay() {
-            countEl.textContent = formatTime(remaining);
-        }
+    function getInputSeconds() {
+        const h = Math.max(0, parseInt(document.getElementById("hours").value) || 0);
+        const m = Math.max(0, parseInt(document.getElementById("minutes").value) || 0);
+        const s = Math.max(0, parseInt(document.getElementById("seconds").value) || 0);
+        return (h * 3600) + (m * 60) + s;
+    }
 
-        function toggleTimer() {
-            if (!isRunning) {
+    function toggleInputs(disabled) {
+        inputs.forEach(input => input.disabled = disabled);
+        document.getElementById("poda").style.opacity = disabled ? "0.6" : "1";
+    }
+
+    function toggleTimer() {
+        if (!isRunning) {
+            // Başlatma veya Devam Etme
+            if (remaining <= 0) {
+                remaining = getInputSeconds();
                 if (remaining <= 0) {
-                    const h = parseInt(hoursInput.value, 10) || 0;
-                    const m = parseInt(minutesInput.value, 10) || 0;
-                    const s = parseInt(secondsInput.value, 10) || 0;
-                    remaining = h * 3600 + m * 60 + s;
-                    if (remaining <= 0) {
-                        alert("Please enter a valid exam duration.");
-                        return;
-                    }
-                    updateDisplay();
+                    alert("Lütfen geçerli bir süre girin.");
+                    return;
                 }
-                interval = setInterval(() => {
-                    if (remaining > 0) {
-                        remaining--;
-                        updateDisplay();
-                    } else {
-                        clearInterval(interval);
-                        interval = null;
-                        isRunning = false;
-                        startPauseBtn.querySelector(".front").textContent = "Start Exam";
-                        countEl.textContent = "TIME UP!";
-                    }
-                }, 1000);
-                isRunning = true;
-                startPauseBtn.querySelector(".front").textContent = "Pause Exam";
-            } else {
-                clearInterval(interval);
-                interval = null;
-                isRunning = false;
-                startPauseBtn.querySelector(".front").textContent = "Resume Exam";
             }
+            
+            toggleInputs(true);
+            btnText.textContent = "Pause Exam";
+            isRunning = true;
+
+            interval = setInterval(() => {
+                if (remaining > 0) {
+                    remaining--;
+                    updateDisplay(remaining);
+                } else {
+                    stopTimer();
+                    countEl.textContent = "TIME UP!";
+                    // Opsiyonel: Buraya bir alarm sesi eklenebilir
+                }
+            }, 1000);
+        } else {
+            // Duraklatma
+            stopTimer();
+            btnText.textContent = "Resume Exam";
         }
+    }
 
-        function resetTimer() {
-            // 1. Önce çalışan bir sayaç varsa durdur
-            clearInterval(interval);
-            interval = null;
-            isRunning = false;
+    function stopTimer() {
+        clearInterval(interval);
+        interval = null;
+        isRunning = false;
+    }
 
-            // 2. Inputlardaki değerleri oku (Hata payını önlemek için || 0 ekliyoruz)
-            const hours = parseInt(document.getElementById('hours').value) || 0;
-            const minutes = parseInt(document.getElementById('minutes').value) || 0;
-            const seconds = parseInt(document.getElementById('seconds').value) || 0;
+    function resetTimer() {
+        stopTimer();
+        toggleInputs(false);
+        remaining = getInputSeconds();
+        updateDisplay(remaining);
+        btnText.textContent = "Start Exam";
+    }
 
-            // 3. Kalan süreyi (remaining) bu değerlere göre güncelle
-            remaining = (hours * 3600) + (minutes * 60) + seconds;
+    // Event Listeners
+    startPauseBtn.addEventListener("click", toggleTimer);
+    resetBtn.addEventListener("click", resetTimer);
 
-            // 4. Sayacı ekranda formatlı göster (Örn: 01:30:00)
-            displayTime(remaining);
+    // Input değiştiğinde sayacı anlık güncelle (Sınav başlamadan önce)
+    inputs.forEach(input => {
+        input.addEventListener("input", () => {
+            if (!isRunning) {
+                remaining = getInputSeconds();
+                updateDisplay(remaining);
+            }
+        });
+    });
 
-            // 5. Buton metnini başa döndür
-            startPauseBtn.querySelector(".front").textContent = "Start Exam";
-        }
-
-        
-        function displayTime(totalSeconds) {
-            const h = Math.floor(totalSeconds / 3600);
-            const m = Math.floor((totalSeconds % 3600) / 60);
-            const s = totalSeconds % 60;
-
-            countEl.textContent = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-        }
-
-        startPauseBtn.addEventListener("click", toggleTimer);
-        resetBtn.addEventListener("click", resetTimer);
-
-        updateDisplay();
-    </script>
+    // İlk açılış
+    updateDisplay(0);
+</script>
 </body>
 
 </html>
