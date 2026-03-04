@@ -7,7 +7,7 @@ This project allows students or instructors to set a countdown timer for exams, 
 
 ## Live Demo
 Live on: [GitHub Pages](https://guitareren.github.io/bilgitimer/)
-
+Neon Theme is Live on: [GitHub Pages](https://guitareren.github.io/bilgitimer/neon.html)
 ## Features
 - ⏳ Set custom exam duration (hours, minutes, seconds).
 - 🎯 Start, pause, and resume the timer.
