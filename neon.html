@@ -82,14 +82,23 @@
             animation: flicker-logo 12s infinite;
         }
 
+        /* MEGA COUNTER */
         #timerDisplay {
-            font-size: min(180px, 18vw);
+            font-size: min(220px, 22vw);
             font-weight: 800;
             color: var(--smoke);
             text-shadow: 4px 4px 0px var(--vice-red), 0 0 30px var(--vice-pink);
             letter-spacing: -6px;
             animation: flicker-timer 7s infinite;
             user-select: none;
+            transition: all 0.3s ease;
+        }
+
+        #timerDisplay.time-up {
+            font-size: min(140px, 14vw);
+            color: var(--vice-cyan);
+            text-shadow: 0 0 20px var(--vice-cyan);
+            letter-spacing: 4px;
         }
 
         .section-inputs { display: flex; gap: 15px; }
@@ -100,7 +109,7 @@
             border-radius: 4px; color: var(--smoke); font-size: 28px; text-align: center; font-family: 'JetBrains Mono'; outline: none;
         }
 
-        /* --- BUTTONS (RESIZED) --- */
+        /* --- BUTTONS --- */
         .animated-button {
             position: relative;
             padding: 14px 0; width: 280px;
@@ -126,7 +135,7 @@
         .reset-btn .circle { background: var(--vice-red); }
         .reset-btn:hover { color: var(--smoke); box-shadow: 0 0 20px var(--vice-red); }
 
-        .hidden { display: none !important; }
+        .hidden { display: none !important; pointer-events: none; opacity: 0; }
 
         /* --- GITHUB FOOTER --- */
         .github-link {
@@ -167,9 +176,9 @@
         </section>
 
         <section class="section-inputs" id="inputArea">
-            <div class="input-group"><label>HOUR</label><input type="number" id="h" placeholder="00"></div>
-            <div class="input-group"><label>MIN</label><input type="number" id="m" placeholder="00"></div>
-            <div class="input-group"><label>SEC</label><input type="number" id="s" placeholder="00"></div>
+            <div class="input-group"><label>HOUR</label><input type="number" id="h" placeholder="00" min="0"></div>
+            <div class="input-group"><label>MIN</label><input type="number" id="m" placeholder="00" min="0" max="59"></div>
+            <div class="input-group"><label>SEC</label><input type="number" id="s" placeholder="00" min="0" max="59"></div>
         </section>
 
         <div id="timerDisplay">00:00:00</div>
@@ -197,6 +206,9 @@
     <script>
         const container = document.getElementById('rainContainer');
         const colors = ['#ff00ff', '#c9033e', '#00f2ff', '#7000ff'];
+        const display = document.getElementById('timerDisplay');
+        const inputArea = document.getElementById('inputArea');
+        const inputs = ['h', 'm', 's'].map(id => document.getElementById(id));
 
         function createRain() {
             for (let i = 0; i < 50; i++) {
@@ -209,53 +221,80 @@
                 container.appendChild(drop);
             }
         }
-
         createRain();
 
         let timer;
         let timeLeft = 0;
         let running = false;
 
-        function updateDisplay() {
-            const hrs = Math.floor(timeLeft / 3600).toString().padStart(2, '0');
-            const mins = Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0');
-            const secs = (timeLeft % 60).toString().padStart(2, '0');
-            document.getElementById('timerDisplay').textContent = `${hrs}:${mins}:${secs}`;
+        // --- REAL TIME UPDATE LOGIC ---
+        function getInputsValue() {
+            const hrs = parseInt(inputs[0].value) || 0;
+            const mins = parseInt(inputs[1].value) || 0;
+            const secs = parseInt(inputs[2].value) || 0;
+            return (hrs * 3600) + (mins * 60) + secs;
         }
 
+        function formatDisplay(totalSeconds) {
+            const hrs = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
+            const mins = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
+            const secs = (totalSeconds % 60).toString().padStart(2, '0');
+            return `${hrs}:${mins}:${secs}`;
+        }
+
+        // Anlık izleme
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                if (!running) {
+                    display.classList.remove('time-up');
+                    timeLeft = getInputsValue();
+                    display.textContent = formatDisplay(timeLeft);
+                }
+            });
+        });
+
+        // --- CONTROL LOGIC ---
         document.getElementById('startBtn').addEventListener('click', function() {
             if (!running) {
-                if (timeLeft === 0) {
-                    const h = parseInt(document.getElementById('h').value) || 0;
-                    const m = parseInt(document.getElementById('m').value) || 0;
-                    const s = parseInt(document.getElementById('s').value) || 0;
-                    timeLeft = (h * 3600) + (m * 60) + s;
-                }
+                timeLeft = getInputsValue();
                 
                 if (timeLeft > 0) {
                     running = true;
-                    document.getElementById('btnText').textContent = "PAUSE";
-                    document.getElementById('inputArea').classList.add('hidden');
-                    updateDisplay();
+                    this.querySelector('#btnText').textContent = "PAUSE";
+                    inputArea.classList.add('hidden');
+                    display.classList.remove('time-up');
                     
                     timer = setInterval(() => {
                         timeLeft--;
-                        updateDisplay();
+                        display.textContent = formatDisplay(timeLeft);
+                        
                         if (timeLeft <= 0) {
                             clearInterval(timer);
-                            alert("Time is up!");
-                            location.reload();
+                            running = false;
+                            display.textContent = "TIME UP!";
+                            display.classList.add('time-up');
+                            document.getElementById('btnText').textContent = "START";
+                            inputArea.classList.remove('hidden');
                         }
                     }, 1000);
                 }
             } else {
                 clearInterval(timer);
                 running = false;
-                document.getElementById('btnText').textContent = "RESUME";
+                this.querySelector('#btnText').textContent = "RESUME";
             }
         });
 
-        document.getElementById('resetBtn').addEventListener('click', () => location.reload());
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            clearInterval(timer);
+            running = false;
+            timeLeft = 0;
+            inputs.forEach(i => i.value = "");
+            display.textContent = "00:00:00";
+            display.classList.remove('time-up');
+            document.getElementById('btnText').textContent = "START";
+            inputArea.classList.remove('hidden');
+        });
     </script>
 </body>
 </html>
