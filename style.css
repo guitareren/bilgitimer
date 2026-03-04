@@ -72,7 +72,7 @@ section.counter {
 }
 
 #count {
-    font-weight: 800;
+    font-weight: 700;
     /* Üst sınırı 33rem'den 15rem veya 20rem gibi daha güvenli bir yere çekiyoruz */
     font-size: clamp(3rem, 18vmin, 15rem); 
     color: whitesmoke;
@@ -673,4 +673,5 @@ header img.logo {
     display: block;
     /* Resmin kendisinde metin seçilmeyi engelle */
     pointer-events: none;
+
 }
