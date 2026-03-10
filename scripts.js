@@ -7,7 +7,7 @@ let interval = null;
 let isRunning = false;
 
 // Ses dosyasını daha güvenilir bir kaynakla güncelledik
-const gongSound = new Audio('https://actions.google.com/sounds/v1/alarms/bugle_tune.ogg');
+const gongSound = new Audio('https://actions.google.com/sounds/v1/cartoon/cartoon_cowbell.ogg');
 
 // Element Seçiciler
 const countEl = document.getElementById("count");
@@ -190,4 +190,5 @@ inputs.forEach(input => {
 });
 
 // Sayfa yüklendiğinde başlat
+
 updateDisplay(0);
