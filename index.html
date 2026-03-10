@@ -3,22 +3,22 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exam Timer</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Roboto+Mono:wght@400;700&display=swap"
-        rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Exam Timer | Bilgi University</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <section class="counter">
 
-        <header class="logo-wrapper">
-            <a href="https://www.bilgi.edu.tr" target="_blank" class="logo-link">
-                <img src="https://tbl.bilgi.edu.tr/brand-resources/logotypes/bilgi/svg/bilgi-logotype-en-light.svg"
-                    alt="Bilgi University Logo" class="logo">
-            </a>
+        <header>
+            <div class="logo-wrapper">
+                <a href="https://www.bilgi.edu.tr" target="_blank" class="logo-link">
+                    <img src="https://tbl.bilgi.edu.tr/brand-resources/logotypes/bilgi/svg/bilgi-logotype-en-light.svg"
+                        alt="Bilgi University Logo" class="logo">
+                </a>
+            </div>
         </header>
 
         <div id="poda" class="input-wrapper-neon">
@@ -26,25 +26,23 @@
             <div class="border"></div>
             <div class="darkBorderBg"></div>
             <div class="glow"></div>
+            
+            <div id="input-mask"></div>
 
             <div class="time-inputs">
-                <div>
+                <div class="input-group">
                     <label for="hours">Hours</label>
                     <input type="number" id="hours" class="input" placeholder="0" min="0">
                 </div>
-                <div>
+                <div class="input-group">
                     <label for="minutes">Minutes</label>
                     <input type="number" id="minutes" class="input" placeholder="0" min="0">
                 </div>
-                <div>
+                <div class="input-group">
                     <label for="seconds">Seconds</label>
                     <input type="number" id="seconds" class="input" placeholder="0" min="0">
                 </div>
             </div>
-
-            <div id="input-mask"></div>
-            <div id="pink-mask"></div>
-
         </div>
 
         <div id="count">00:00:00</div>
@@ -61,107 +59,15 @@
 
     <footer class="footer">
         <a href="https://github.com/guitareren" target="_blank" class="github-link">
-            <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.2-1.2-1.5-1.2-1.5-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 .1 1.6-.7 1.8-1.1.1-.7.4-1.1.7-1.3-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.4 1.2-3.3-.1-.3-.5-1.6.1-3.3 0 0 1-.3 3.4 1.2a11.7 11.7 0 0 1 6.2 0c2.4-1.5 3.4-1.2 3.4-1.2.6 1.7.2 3 .1 3.3.8.9 1.2 2 1.2 3.3 0 4.5-2.7 5.5-5.3 5.8.4.3.8 1 .8 2.1v3.1c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5z" />
+            <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
+                <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.5-3.9-1.5-.5-1.2-1.2-1.5-1.2-1.5-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 .1 1.6-.7 1.8-1.1.1-.7.4-1.1.7-1.3-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.4 1.2-3.3-.1-.3-.5-1.6.1-3.3 0 0 1-.3 3.4 1.2a11.7 11.7 0 0 1 6.2 0c2.4-1.5 3.4-1.2 3.4-1.2.6 1.7.2 3 .1 3.3.8.9 1.2 2 1.2 3.3 0 4.5-2.7 5.5-5.3 5.8.4.3.8 1 .8 2.1v3.1c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.65 18.35.5 12 .5z" />
             </svg>
             <span>eren<strong>avunc</strong></span>
         </a>
     </footer>
- <script>
-    let remaining = 0;
-    let interval = null;
-    let isRunning = false;
 
-    const countEl = document.getElementById("count");
-    const startPauseBtn = document.getElementById("startPause");
-    const resetBtn = document.getElementById("reset");
-    const btnText = startPauseBtn.querySelector(".front");
-    const inputs = document.querySelectorAll(".time-inputs input");
-
-    // Zamanı formatlayan tek ve optimize fonksiyon
-    function updateDisplay(totalSeconds) {
-        const h = Math.floor(totalSeconds / 3600);
-        const m = Math.floor((totalSeconds % 3600) / 60);
-        const s = totalSeconds % 60;
-        countEl.textContent = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-    }
-
-    function getInputSeconds() {
-        const h = Math.max(0, parseInt(document.getElementById("hours").value) || 0);
-        const m = Math.max(0, parseInt(document.getElementById("minutes").value) || 0);
-        const s = Math.max(0, parseInt(document.getElementById("seconds").value) || 0);
-        return (h * 3600) + (m * 60) + s;
-    }
-
-    function toggleInputs(disabled) {
-        inputs.forEach(input => input.disabled = disabled);
-        document.getElementById("poda").style.opacity = disabled ? "0.6" : "1";
-    }
-
-    function toggleTimer() {
-        if (!isRunning) {
-            // Başlatma veya Devam Etme
-            if (remaining <= 0) {
-                remaining = getInputSeconds();
-                if (remaining <= 0) {
-                    alert("Lütfen geçerli bir süre girin.");
-                    return;
-                }
-            }
-            
-            toggleInputs(true);
-            btnText.textContent = "Pause Exam";
-            isRunning = true;
-
-            interval = setInterval(() => {
-                if (remaining > 0) {
-                    remaining--;
-                    updateDisplay(remaining);
-                } else {
-                    stopTimer();
-                    countEl.textContent = "TIME UP!";
-                    // Opsiyonel: Buraya bir alarm sesi eklenebilir
-                }
-            }, 1000);
-        } else {
-            // Duraklatma
-            stopTimer();
-            btnText.textContent = "Resume Exam";
-        }
-    }
-
-    function stopTimer() {
-        clearInterval(interval);
-        interval = null;
-        isRunning = false;
-    }
-
-    function resetTimer() {
-        stopTimer();
-        toggleInputs(false);
-        remaining = getInputSeconds();
-        updateDisplay(remaining);
-        btnText.textContent = "Start Exam";
-    }
-
-    // Event Listeners
-    startPauseBtn.addEventListener("click", toggleTimer);
-    resetBtn.addEventListener("click", resetTimer);
-
-    // Input değiştiğinde sayacı anlık güncelle (Sınav başlamadan önce)
-    inputs.forEach(input => {
-        input.addEventListener("input", () => {
-            if (!isRunning) {
-                remaining = getInputSeconds();
-                updateDisplay(remaining);
-            }
-        });
-    });
-
-    // İlk açılış
-    updateDisplay(0);
-</script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="scripts.js"></script>
 </body>
 
 </html>

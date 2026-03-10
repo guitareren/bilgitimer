@@ -2,44 +2,18 @@
     --bg-color: #121212;
     --text-color: #e0e0e0;
     --accent-color: hsl(342, 97%, 40%);
-    --shadow-color: rgba(0, 0, 0, 0.4);
-    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-family: 'Inter', sans-serif;
+    --neon-purple: #a099d8;
+    --neon-pink: #cf30aa;
 }
 
+/* --- Base Reset --- */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
     -webkit-tap-highlight-color: transparent;
-    /* Mobilde tıklama anındaki mavi kutuyu siler */
-    -webkit-touch-callout: none;
-    /* iOS'ta basılı tutunca çıkan menüyü engeller */
-    -webkit-user-select: none;
-    /* Safari */
-    -khtml-user-select: none;
-    /* Konqueror HTML */
-    -moz-user-select: none;
-    /* Firefox */
-    -ms-user-select: none;
-    /* Internet Explorer/Edge */
     user-select: none;
-    /* Standart */
-}
-
-header {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px 0;
-    position: relative;
-    /* Absolute yerine relative yaparak altındaki elemanları aşağı iter */
-    z-index: 100;
-}
-
-header img.logo {
-    height: clamp(40px, 7vh, 55px);
-    width: auto;
 }
 
 body {
@@ -49,566 +23,41 @@ body {
     align-items: center;
     font-family: var(--font-family);
     background-color: var(--bg-color);
+    background-image: radial-gradient(circle at 50% 50%, rgba(226, 3, 77, 0.05) 0%, rgba(18, 18, 18, 1) 70%);
     color: var(--text-color);
     overflow: hidden;
-    touch-action: pan-x pan-y;
-    background-image: radial-gradient(circle at 50% 50%,
-            rgba(226, 3, 77, 0.05) 0%,
-            rgba(18, 18, 18, 1) 70%);
+    touch-action: manipulation;
 }
 
-
+/* --- Layout --- */
 section.counter {
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Elemanları merkeze topla */
+    justify-content: center;
     align-items: center;
     width: 100%;
-    min-height: 100dvh; /* Sabit değil, minimum yükseklik */
+    min-height: 100dvh;
     padding: 20px;
-    box-sizing: border-box;
-    gap: 2vh; /* Elemanlar arası boşluğu ekran yüksekliğine göre ayarla */
-    overflow-y: auto; /* İçerik taşarsa kaydırılabilir olsun */
+    gap: 2vh;
 }
 
-#count {
-    font-weight: 700;
-    /* Üst sınırı 33rem'den 15rem veya 20rem gibi daha güvenli bir yere çekiyoruz */
-    font-size: clamp(3rem, 18vmin, 15rem); 
-    color: whitesmoke;
-    line-height: 0.9; /* Satır yüksekliğini biraz daraltmak yer kazandırır */
-    letter-spacing: -0.04em;
-    font-variant-numeric: tabular-nums;
-    text-align: center;
-    max-width: 95vw;
-    z-index: 5;
-    flex-shrink: 0; /* Sayacın ezilmesini engelle */
-}
-
-
-@keyframes countAppear {
-    from {
-        opacity: 0;
-        transform: translateY(20px) scale(0.9);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-
-.pushable {
-    position: relative;
-    border: none;
-    background: transparent;
-    padding: 0;
-    cursor: pointer;
-    outline: none;
-    user-select: none;
-    touch-action: manipulation;
-    width: clamp(160px, 50vmin, 280px);
-    margin: 2vh 0;
-    animation: buttonAppear 0.6s 0.3s cubic-bezier(0.23, 1, 0.32, 1) both;
-    z-index: 10;
-    flex-shrink: 1;
-    min-height: 40px;
-}
-
-@keyframes buttonAppear {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.shadow {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 16px;
-    background: hsl(0deg 0% 0% / 0.3);
-    will-change: transform;
-    transform: translateY(4px);
-    transition: transform 600ms cubic-bezier(.3, .7, .4, 1);
-}
-
-.edge {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 16px;
-    background: linear-gradient(to left,
-            hsl(340deg 100% 16%) 0%,
-            hsl(340deg 100% 32%) 8%,
-            hsl(340deg 100% 32%) 92%,
-            hsl(340deg 100% 16%) 100%);
-}
-
-.front {
-    display: block;
-    position: relative;
-    padding: clamp(8px, 2vh, 14px) 0;
-    /* üst-alt padding küçülür/büyür */
-
-
-    border-radius: 16px;
-    font-size: clamp(0.8rem, 3vw, 1.2rem);
-    /* yazı boyutu orantılı */
-
-    font-weight: 700;
-    color: white;
-    background: var(--accent-color);
-    will-change: transform;
-    transform: translateY(-6px);
-    transition: transform 600ms cubic-bezier(.3, .7, .4, 1), background 200ms;
-    text-align: center;
-    letter-spacing: 0.02em;
-}
-
-.pushable:hover {
-    filter: brightness(105%);
-}
-
-.pushable:hover .front {
-    transform: translateY(-8px);
-    transition: transform 250ms cubic-bezier(.3, .7, .4, 1.5);
-}
-
-.pushable:active .front {
-    background: rgb(190, 5, 98);
-    transform: translateY(-2px);
-    transition: transform 34ms;
-}
-
-.pushable:hover .shadow {
-    transform: translateY(6px);
-    transition: transform 250ms cubic-bezier(.3, .7, .4, 1.5);
-}
-
-.pushable:active .shadow {
-    transform: translateY(2px);
-    transition: transform 34ms;
-}
-
-
-#reset {
-    background-color: transparent;
-    color: #ef5350;
-    border: 2px solid transparent;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    opacity: 0.5;
-
-    /* Responsive font ve padding */
-    font-size: clamp(0.75rem, 2vmin, 1rem);
-    padding: 12px 24px;
-    margin-top: auto;
-    margin-bottom: 5vh;
-}
-
-#reset:hover {
-    opacity: 1;
-    background-color: rgba(239, 83, 80, 0.1);
-    border-color: rgba(239, 83, 80, 0.2);
-}
-
-#reset:active {
-    transform: scale(0.95);
-}
-
-
-.input-wrapper-neon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 10px;
-    /* Logodan sonraki boşluk */
-    margin-bottom: 20px;
-    /* Sayıdan önceki boşluk */
-    scale: 0.85;
-    z-index: 50;
-    position: relative;
-}
-
-.grid {
-    height: 800px;
-    width: 800px;
-    background-image: linear-gradient(to right, #0f0f10 1px, transparent 1px),
-        linear-gradient(to bottom, #0f0f10 1px, transparent 1px);
-    background-size: 1rem 1rem;
-    background-position: center center;
-    position: absolute;
-    z-index: -1;
-    filter: blur(1px);
-}
-
-
-.white,
-.border,
-.darkBorderBg,
-.glow {
-    max-height: 70px;
-    max-width: 314px;
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    overflow: hidden;
-    z-index: -1;
-    border-radius: 12px;
-    filter: blur(3px);
-    pointer-events: none;
-}
-
-#main {
-    position: relative;
-    z-index: 50;
-}
-
-
-.input {
-    background-color: #010201;
-    border: none;
-    width: 301px;
-    height: 56px;
-    border-radius: 10px;
-    color: white;
-    padding-inline: 15px;
-    font-size: 1.5rem;
-    font-family: var(--font-family);
-    position: relative;
-    z-index: 60;
-    pointer-events: auto;
-    text-align: center;
-}
-
-#poda {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-}
-
-.input::placeholder {
-    color: #c0b9c0;
-}
-
-.input:focus {
-    outline: none;
-}
-
-#input-mask,
-#pink-mask {
-    pointer-events: none;
-    position: absolute;
-    z-index: 52;
-}
-
-#input-mask {
-    width: 100px;
-    height: 20px;
-    background: linear-gradient(90deg, transparent, black);
-    top: 18px;
-    left: 70px;
-}
-
-#pink-mask {
-    width: 30px;
-    height: 20px;
-    background: #cf30aa;
-    top: 10px;
-    left: 5px;
-    filter: blur(20px);
-    opacity: 0.8;
-    transition: all 2s;
-}
-
-.white::before,
-.border::before,
-.darkBorderBg::before,
-.glow:before {
-    content: "";
-    z-index: -2;
-    top: 50%;
-    left: 50%;
-    position: absolute;
-    background-repeat: no-repeat;
-    transition: all 2s;
-}
-
-.white::before {
-    transform: translate(-50%, -50%) rotate(83deg);
-    width: 600px;
-    height: 600px;
-    filter: brightness(1.4);
-    background-image: conic-gradient(rgba(0, 0, 0, 0) 0%, #a099d8, rgba(0, 0, 0, 0) 8%, rgba(0, 0, 0, 0) 50%, #dfa2da, rgba(0, 0, 0, 0) 58%);
-}
-
-.border::before {
-    transform: translate(-50%, -50%) rotate(70deg);
-    width: 600px;
-    height: 600px;
-    filter: brightness(1.3);
-    background-image: conic-gradient(#1c191c, #402fb5 5%, #1c191c 14%, #1c191c 50%, #cf30aa 60%, #1c191c 64%);
-}
-
-.darkBorderBg::before {
-    transform: translate(-50%, -50%) rotate(82deg);
-    width: 600px;
-    height: 600px;
-    background-image: conic-gradient(rgba(0, 0, 0, 0), #18116a, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, 0) 50%, #6e1b60, rgba(0, 0, 0, 0) 60%);
-}
-
-.glow:before {
-    transform: translate(-50%, -50%) rotate(60deg);
-    width: 999px;
-    height: 999px;
-    background-image: conic-gradient(#000, #402fb5 5%, #000 38%, #000 50%, #cf30aa 60%, #000 87%);
-}
-
-#poda:hover>.darkBorderBg::before {
-    transform: translate(-50%, -50%) rotate(-98deg);
-}
-
-#poda:hover>.white::before {
-    transform: translate(-50%, -50%) rotate(-97deg);
-}
-
-#poda:hover>.border::before {
-    transform: translate(-50%, -50%) rotate(-110deg);
-}
-
-#poda:focus-within>.darkBorderBg::before {
-    transform: translate(-50%, -50%) rotate(442deg);
-    transition: all 4s;
-}
-
-#poda:focus-within>.white::before {
-    transform: translate(-50%, -50%) rotate(443deg);
-    transition: all 4s;
-}
-
-#poda:focus-within>.border::before {
-    transform: translate(-50%, -50%) rotate(430deg);
-    transition: all 4s;
-}
-
-/* Timer ikonunu tüm grubun sağına sabitle */
-#filter-icon {
-    position: absolute;
-    top: 50%;
-    right: -50px;
-    /* input grubunun sağında */
-    transform: translateY(-50%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 60;
-    height: 40px;
-    width: 38px;
-    border-radius: 10px;
-    background: linear-gradient(180deg, #161329, black, #1d1b4b);
-    pointer-events: none;
-}
-
-
-@media (min-width: 1200px) {
-    section.counter {
-        max-width: 1000px;
-        margin: 0 auto;
-    }
-}
-
-.footer {
-    position: absolute;
-    bottom: 20px;
+header {
     width: 100%;
     display: flex;
     justify-content: center;
-    align-items: center;
-    z-index: 10;
+    padding: 20px 0;
+    z-index: 100;
 }
 
-.github-link {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: rgba(255, 255, 255, 0.3);
-    text-decoration: none;
-    font-size: 0.85rem;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    padding: 8px 16px;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: all 0.4s ease;
-    backdrop-filter: blur(5px);
-}
-
-.github-link svg {
-    width: 20px;
-    height: 20px;
-    transition: transform 0.4s ease;
-}
-
-.github-link:hover {
-    color: #fff;
-    background: rgba(226, 3, 77, 0.1);
-
-    border-color: var(--accent-color);
-    box-shadow: 0 0 20px rgba(226, 3, 77, 0.2);
-}
-
-.github-link:hover svg {
-    transform: rotate(360deg) scale(1.1);
-}
-
-html,
-body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    min-height: 100vh;
-    overflow: hidden;
-    /* Tarayıcının çift tıkla odaklanma/zoom hareketini tamamen kapatır */
-    touch-action: manipulation;
-    /* Metin seçmeyi engeller (sayı artırırken metnin maviye boyanmaması için) */
-    user-select: none;
-    -webkit-user-select: none;
-    overscroll-behavior: none;
-}
-
-.pushable,
-.nav-card,
-.home-icon-link {
-    -webkit-tap-highlight-color: transparent;
-    /* Mobildeki tıklama gölgesini siler */
-    outline: none;
-    /* Odaklanma çerçevesini kaldırır */
-    user-select: none;
-}
-
-.pushable:focus,
-.nav-card:focus {
-    outline: none;
-}
-
-/* Input kutuları daha küçük ve orantılı */
-.time-inputs .input {
-    width: clamp(60px, 15vw, 100px);
-    height: clamp(40px, 6vh, 56px);
-    text-align: center;
-    font-size: clamp(1rem, 3vw, 1.2rem);
-    padding: 0;
-}
-
-/* Zaman inputları kapsayıcı */
-.time-inputs {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    align-items: flex-end;
-    flex-wrap: wrap;
-    position: relative;
-    /* ikon için referans */
-}
-
-
-.time-inputs div {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.time-inputs label {
-    color: var(--text-color);
-    font-size: 0.9rem;
-    margin-bottom: 6px;
-    font-family: var(--font-family);
-}
-
-#reset {
-    font-size: clamp(0.8rem, 2vw, 1rem);
-    padding: clamp(8px, 2vw, 12px) clamp(16px, 4vw, 24px);
-    margin-top: clamp(3vh, 5vh, 8vh);
-}
-
-/* Yükseklik 500px'den küçükse (Yatay telefonlar) */
-@media (max-height: 600px) {
-    header {
-        padding: 5px 0;
-    }
-
-    header img.logo {
-        height: 30px;
-    }
-
-    .input-wrapper-neon {
-        margin-top: 5px;
-        margin-bottom: 5px;
-        scale: 0.7;
-        /* Input grubunu küçült */
-    }
-
-    #count {
-        font-size: clamp(3rem, 15vh, 6rem);
-        /* Sayıyı dikeyde daralt */
-    }
-
-    .pushable {
-        width: clamp(120px, 30vmin, 200px);
-        margin: 1vh 0;
-    }
-
-    .front {
-        padding: 6px 0;
-        font-size: 0.8rem;
-    }
-
-    #reset {
-        margin-top: 5px;
-        margin-bottom: 4vh;
-        padding: 5px 15px;
-    }
-
-    .footer {
-        position: relative;
-        /* Üst üste binmeyi önlemek için akışa dahil et */
-        bottom: 0;
-        padding: 10px 0;
-        display: none;
-    }
-}
-
-/* Logo Kapsayıcısı */
+/* --- Logo Animation --- */
 .logo-wrapper {
     position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     padding: 3px;
     border-radius: 14px;
     overflow: hidden;
-    z-index: 1;
     transition: transform 0.3s ease;
-    cursor: pointer;
 }
 
-/* Arka plandaki dönen neon ışık */
 .logo-wrapper::before {
     content: "";
     position: absolute;
@@ -617,21 +66,14 @@ body {
     top: 50%;
     width: 300%;
     height: 300%;
-    background-image: conic-gradient(rgba(0, 0, 0, 0) 0%,
-            #a099d8 10%,
-            rgba(0, 0, 0, 0) 20%,
-            rgba(0, 0, 0, 0) 50%,
-            #cf30aa 60%,
-            rgba(0, 0, 0, 0) 70%);
+    background-image: conic-gradient(transparent 0%, var(--neon-purple) 10%, transparent 20%, transparent 50%, var(--neon-pink) 60%, transparent 70%);
     transform: translate(-50%, -50%) rotate(0deg);
-    /* Animasyon varsayılan olarak duraklatıldı */
     animation: rotateLogoBorder 3s linear infinite;
     animation-play-state: paused;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s;
 }
 
-/* Logo arkasındaki sabit siyah zemin */
 .logo-wrapper::after {
     content: "";
     position: absolute;
@@ -641,37 +83,303 @@ body {
     z-index: -1;
 }
 
-/* --- HOVER DURUMU --- */
-
 .logo-wrapper:hover {
     transform: scale(1.05);
-    /* Hafif büyüme efekti */
 }
 
 .logo-wrapper:hover::before {
     opacity: 1;
-    /* Işık görünür olur */
     animation-play-state: running;
-    /* Animasyon dönmeye başlar */
 }
 
 @keyframes rotateLogoBorder {
-    from {
-        transform: translate(-50%, -50%) rotate(0deg);
-    }
-
     to {
         transform: translate(-50%, -50%) rotate(360deg);
     }
 }
 
 header img.logo {
-    position: relative;
-    z-index: 2;
     height: clamp(40px, 7vh, 55px);
-    width: auto;
     display: block;
-    /* Resmin kendisinde metin seçilmeyi engelle */
-    pointer-events: none;
+}
 
+/* --- Improved Neon Input Wrapper --- */
+.input-wrapper-neon {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px 25px;
+    border-radius: 15px;
+    overflow: hidden;
+    scale: 0.85;
+    z-index: 50;
+}
+
+.white,
+.border,
+.darkBorderBg,
+.glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    filter: blur(5px);
+    z-index: -2;
+}
+
+.white::before,
+.border::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 600px;
+    height: 600px;
+    transform: translate(-50%, -50%) rotate(0deg);
+    background-image: conic-gradient(transparent, var(--neon-purple), transparent 10%, transparent 50%, var(--neon-pink), transparent 60%);
+    transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Neon Interaction */
+.input-wrapper-neon:hover .white::before {
+    transform: translate(-50%, -50%) rotate(-120deg);
+}
+
+.input-wrapper-neon:focus-within .white::before {
+    transform: translate(-50%, -50%) rotate(440deg);
+    transition: transform 4s linear;
+}
+
+#input-mask {
+    position: absolute;
+    inset: 2px;
+    background: var(--bg-color);
+    border-radius: 13px;
+    z-index: -1;
+}
+
+.time-inputs {
+    display: flex;
+    gap: 15px;
+    position: relative;
+    z-index: 60;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input-group label {
+    font-size: 0.75rem;
+    color: #888;
+    margin-bottom: 5px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.input {
+    background: #050505;
+    border: 1px solid #222;
+    width: 75px;
+    height: 55px;
+    border-radius: 10px;
+    color: white;
+    font-size: 1.6rem;
+    text-align: center;
+    font-family: 'Roboto Mono', monospace;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 15px rgba(226, 3, 77, 0.3);
+}
+
+/* --- Timer Display --- */
+#count {
+    font-weight: 800;
+    /* Zoom yapınca durmaması için üst sınırı 80rem yaptık */
+    font-size: clamp(3.5rem, 20vmin, 80rem); 
+    color: whitesmoke;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.05em;
+    text-shadow: 0 0 30px rgba(226, 3, 77, 0.2);
+    margin: 10px 0;
+}
+
+/* --- 3D Button (Hızlandırıldı) --- */
+.pushable {
+    position: relative;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    width: clamp(200px, 50vmin, 300px);
+    border: none;
+}
+
+.shadow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.5);
+    transform: translateY(4px);
+    /* 600ms -> 150ms: Geri çıkış hızı */
+    transition: transform 150ms cubic-bezier(.3, .7, .4, 1);
+}
+
+.edge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    background: linear-gradient(to left, hsl(340, 100%, 16%), hsl(340, 100%, 32%) 8%, hsl(340, 100%, 32%) 92%, hsl(340, 100%, 16%));
+}
+
+.front {
+    display: block;
+    position: relative;
+    padding: 15px 0;
+    border-radius: 16px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: white;
+    background: var(--accent-color);
+    transform: translateY(-6px);
+    /* 600ms -> 150ms: Geri çıkış hızı */
+    transition: transform 150ms cubic-bezier(.3, .7, .4, 1);
+    text-align: center;
+}
+
+.pushable:hover .front {
+    transform: translateY(-8px);
+}
+
+/* Tıklama anındaki anlık tepki için 34ms */
+.pushable:active .front {
+    transform: translateY(-2px);
+    transition: transform 34ms;
+}
+
+.pushable:active .shadow {
+    transform: translateY(2px);
+    transition: transform 34ms;
+}
+
+.pushable:hover .shadow {
+    transform: translateY(6px);
+}
+
+/* --- Reset Butonu Düzenlemesi --- */
+#reset {
+    background: none;
+    border: none;
+    color: #ff5252;
+    cursor: pointer;
+    opacity: 0.5;
+    margin-top: 5px;
+    margin-bottom: 25px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+#reset:hover {
+    opacity: 1;
+    transform: scale(1.1);
+    text-shadow: 0 0 10px rgba(255, 82, 82, 0.4);
+}
+
+/* --- Footer & GitHub Logo Düzenlemesi --- */
+.footer {
+    position: fixed;
+    bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    z-index: 10;
+}
+
+.github-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: rgba(255, 255, 255, 0.4);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    padding: 8px 18px;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.github-link svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+    transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.github-link span strong {
+    color: rgba(255, 255, 255, 0.6);
+    transition: color 0.4s ease;
+}
+
+.github-link:hover {
+    color: #fff;
+    background: rgba(226, 3, 77, 0.15);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 20px rgba(226, 3, 77, 0.3),
+        inset 0 0 10px rgba(226, 3, 77, 0.1);
+    transform: translateY(-3px);
+}
+
+.github-link:hover svg {
+    transform: rotate(360deg) scale(1.2);
+    fill: #fff;
+}
+
+.github-link:hover span strong {
+    color: var(--accent-color);
+}
+
+/* --- Responsive Landscape (Yatay Mod) --- */
+@media (max-height: 550px) {
+    #count {
+        font-size: 5rem;
+    }
+
+    .input-wrapper-neon {
+        scale: 0.6;
+        margin: 0;
+    }
+
+    .pushable {
+        width: 160px;
+    }
+
+    .front {
+        padding: 10px 0;
+        font-size: 0.9rem;
+    }
+
+    .footer {
+        display: none;
+    }
 }
